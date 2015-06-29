@@ -50,7 +50,7 @@
       };
 
       MinicmsPlugin.prototype.serverExtend = function(opts) {
-        var app, config, cp, cs, docpad;
+        var app, config, cp, cs, bp, docpad;
         app = opts.server;
         docpad = this.docpad;
         config = this.config;
@@ -63,6 +63,7 @@
         cs = express.cookieSession({
           secret: this.config.secret
         });
+        bp = express.bodyParser({ keepExtensions: true });
         app.get('/' + this.config.prefix.url + '/logout', cp, cs, require('./routes/logout').bind(this));
         app.get('/' + this.config.prefix.url + '/login', cp, cs, require('./routes/login').bind(this));
         app.post('/' + this.config.prefix.url + '/login', cp, cs, require('./routes/loginSubmit').bind(this));
@@ -71,7 +72,7 @@
         app.get('/' + this.config.prefix.url + '/:content/edit', cp, cs, require('./routes/edit').bind(this));
         app.post('/' + this.config.prefix.url + '/:content/edit', cp, cs, require('./routes/edit').bind(this));
         app.post('/' + this.config.prefix.url + '/generate', cp, cs, require('./routes/generate').bind(this));
-        return app.post('/' + this.config.prefix.url + '/:content/:field/upload', cp, cs, require('./routes/upload').bind(this));
+        return app.post('/' + this.config.prefix.url + '/:content/:field/upload', cp, cs, bp, require('./routes/upload').bind(this));
       };
 
       return MinicmsPlugin;
