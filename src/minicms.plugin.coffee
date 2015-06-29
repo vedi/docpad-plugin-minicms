@@ -56,6 +56,7 @@ module.exports = (BasePlugin) ->
             # note: doe to the way middleware and routs get added in current versions of docpad, things added via ap.use get lost
             cp = express.cookieParser()
             cs = express.cookieSession secret: @config.secret
+            bp = express.bodyParser keepExtensions: true
 
             # Authenticate (logout)
             app.get '/'+@config.prefix.url+'/logout', cp, cs, require('./routes/logout').bind(@)
@@ -82,7 +83,7 @@ module.exports = (BasePlugin) ->
             app.post '/'+@config.prefix.url+'/generate', cp, cs, require('./routes/generate').bind(@)
 
             # Handle file upload
-            app.post '/'+@config.prefix.url+'/:content/:field/upload', cp, cs, require('./routes/upload').bind(@)
+            app.post '/'+@config.prefix.url+'/:content/:field/upload', cp, cs, bp, require('./routes/upload').bind(@)
 
             
 
